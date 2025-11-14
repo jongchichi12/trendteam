@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 가장 호환 잘 되는 부모로 우선 고정 -->
+    <style name="Theme.AndroidLab" parent="Theme.Material3.DayNight">
+        <!-- 필요하면 item 추가 -->
+    </style>
+</resources>
