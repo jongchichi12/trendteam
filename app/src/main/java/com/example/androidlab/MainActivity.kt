@@ -20,3 +20,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+// 모바일 로그인용
+//sksekrhfo123@naver.com
+//1234

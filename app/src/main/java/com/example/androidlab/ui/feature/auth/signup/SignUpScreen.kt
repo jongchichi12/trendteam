@@ -87,6 +87,14 @@ fun SignUpScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // 비밀번호 (아이디 바로 아래)
+            Spacer(Modifier.height(12.dp))
+            PasswordField(
+                value = state.password,
+                onValueChange = vm::updatePassword,
+                modifier = Modifier.fillMaxWidth()
+            )
+
             // 전화번호
             Spacer(Modifier.height(12.dp))
             OutlinedTextField(
@@ -103,10 +111,10 @@ fun SignUpScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // 🔎 주소찾기 + 주소(읽기전용)
+            // 🔎 주소찾기 + 상세주소 한 줄
             Spacer(Modifier.height(12.dp))
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
@@ -117,31 +125,33 @@ fun SignUpScreen(
                     },
                     enabled = !state.loading,
                     modifier = Modifier
-                        .weight(1f)
+                        .width(112.dp)
                         .height(52.dp),
                     shape = MaterialTheme.shapes.extraLarge
                 ) {
                     Text("주소찾기")
                 }
 
+                Spacer(Modifier.width(8.dp))
+
                 OutlinedTextField(
-                    value = state.address,
-                    onValueChange = {}, // 주소찾기는 버튼으로만 변경
-                    readOnly = true,
-                    label = { Text("주소") },
+                    value = state.addressDetail,
+                    onValueChange = vm::updateAddressDetail,
+                    label = { Text("상세주소") },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     modifier = Modifier.weight(1f)
                 )
             }
 
-            // 상세주소
+            // 주소: 전체 너비, 읽기전용 (버튼/상세주소 아래)
             Spacer(Modifier.height(12.dp))
             OutlinedTextField(
-                value = state.addressDetail,
-                onValueChange = vm::updateAddressDetail,
-                label = { Text("상세주소") },
+                value = state.address,
+                onValueChange = {}, // 주소찾기는 버튼으로만 변경
+                readOnly = true,
+                label = { Text("주소") },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -158,14 +168,6 @@ fun SignUpScreen(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Email
                 ),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // 비밀번호
-            Spacer(Modifier.height(12.dp))
-            PasswordField(
-                value = state.password,
-                onValueChange = vm::updatePassword,
                 modifier = Modifier.fillMaxWidth()
             )
 

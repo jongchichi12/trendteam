@@ -72,6 +72,11 @@ android {
 dependencies {
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.04.01")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
@@ -103,9 +108,10 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
-    // (주소 검색에 쓸) Retrofit + Moshi
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")   // ★ 필수
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")

@@ -47,7 +47,8 @@ fun AppNavGraph(
             SignUpScreen(
                 onBack = { navController.popBackStack() },
                 onSignUpSuccess = {
-                    navController.navigate("home") {
+                    // 회원가입 완료 시 홈 대신 로그인 화면으로 이동
+                    navController.navigate("login") {
                         popUpTo("login") { inclusive = true }
                         launchSingleTop = true
                     }
