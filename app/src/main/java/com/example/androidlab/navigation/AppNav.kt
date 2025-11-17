@@ -9,13 +9,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.androidlab.ui.feature.address.AddressSearchScreen
 import com.example.androidlab.ui.feature.auth.login.LoginScreen
 import com.example.androidlab.ui.feature.auth.signup.SignUpScreen
+import com.example.androidlab.ui.feature.feed.FavoriteFeedScreen
 import com.example.androidlab.ui.feature.home.HomeScreen
+import com.example.androidlab.ui.feature.post.WritePostScreen
+import com.example.androidlab.ui.feature.profile.MyPageScreen
 
 object Routes {
     const val LOGIN = "login"
     const val SIGN_UP = "signUp"
     const val HOME = "home"
     const val ADDR_SEARCH = "addrSearch"
+    const val WRITE_POST = "writePost"
+    const val MY_PAGE = "myPage"
+    const val FAVORITE_FEED = "favoriteFeed"
 }
 
 @Composable
@@ -59,7 +65,14 @@ fun AppNavGraph(
                 navController = navController
             )
         }
-        composable("home") { HomeScreen() }
+        composable("home") {
+            HomeScreen(
+                onProfile = { navController.navigate(Routes.MY_PAGE) },
+                onFeed = { navController.navigate(Routes.FAVORITE_FEED) },
+                onWritePost = { navController.navigate(Routes.WRITE_POST) },
+                onBack = { navController.popBackStack() }
+            )
+        }
         
         composable(Routes.ADDR_SEARCH) {
             AddressSearchScreen(
@@ -72,6 +85,20 @@ fun AppNavGraph(
                     navController.popBackStack()
                 }
             )
+        }
+
+        composable(Routes.WRITE_POST) {
+            WritePostScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.MY_PAGE) {
+            MyPageScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Routes.FAVORITE_FEED) {
+            FavoriteFeedScreen(onBack = { navController.popBackStack() })
         }
     }
 }

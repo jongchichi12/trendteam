@@ -7,6 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.androidlab.data.auth.local.LocalAuthDataSource
 import com.example.androidlab.data.auth.local.db.AppDatabase
 import com.example.androidlab.data.auth.local.db.UserDao
+import com.example.androidlab.data.local.db.PostDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,4 +37,7 @@ object CommonModule {
 
     @Provides @Singleton
     fun provideLocalAuthDataSource(dao: UserDao): LocalAuthDataSource = LocalAuthDataSource(dao)
+
+    @Provides
+    fun providePostDao(db: AppDatabase): PostDao = db.postDao()
 }

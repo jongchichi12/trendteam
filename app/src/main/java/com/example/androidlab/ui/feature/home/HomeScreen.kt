@@ -33,11 +33,13 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.RowScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,34 +47,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.androidlab.domain.post.Post
 
 private val BackgroundLavender = Color(0xFFEDE4FF)
 private val PrimaryPurple = Color(0xFF7B61FF)
-
-data class HomeFeedItem(
-    val id: String,
-    val author: String,
-    val content: String,
-    val likes: Int,
-    val comments: Int
-)
-
-private val sampleFeed = listOf(
-    HomeFeedItem(
-        id = "1",
-        author = "마음친구",
-        content = "오늘 날씨가 좋아서 산책을 다녀왔어요. 같이 걷고 싶은 사람?",
-        likes = 12,
-        comments = 3
-    ),
-    HomeFeedItem(
-        id = "2",
-        author = "함께걷기",
-        content = "동아리 활동 사진 공유합니다! 이번 주 모임도 기대돼요 😊",
-        likes = 25,
-        comments = 10
-    )
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,11 +58,13 @@ fun HomeScreen(
     onProfile: () -> Unit = {},
     onFeed: () -> Unit = {},
     onWritePost: () -> Unit = {},
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    vm: HomeViewModel = hiltViewModel()
     // 이후: 탭별 onClick, 공감/댓글/공유 콜백 확장 가능
 ) {
     var selectedTab by remember { mutableStateOf(0) }
     val tabTitles = listOf("홈", "동아리 활동", "뿌리 찾기", "상담")
+    val state by vm.state.collectAsState()
 
     Scaffold(
         containerColor = BackgroundLavender,
@@ -159,15 +139,21 @@ fun HomeScreen(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(sampleFeed, key = { it.id }) { item ->
-                FeedCard(item)
+            if (state.posts.isEmpty()) {
+                item {
+                    EmptyFeedCard()
+                }
+            } else {
+                items(state.posts, key = { it.id }) { item ->
+                    FeedCard(item)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun FeedCard(item: HomeFeedItem) {
+private fun FeedCard(item: Post) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -183,7 +169,7 @@ private fun FeedCard(item: HomeFeedItem) {
                 )
                 Spacer(Modifier.width(12.dp))
                 Column {
-                    Text(item.author, fontWeight = FontWeight.SemiBold)
+                    Text(item.authorName, fontWeight = FontWeight.SemiBold)
                     Text("방금 전", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                 }
             }
@@ -194,13 +180,30 @@ private fun FeedCard(item: HomeFeedItem) {
                 IconButton(onClick = { /* TODO: like */ }) {
                     Icon(Icons.Default.Favorite, contentDescription = "공감", tint = PrimaryPurple)
                 }
-                Text("${item.likes}")
+                Text("${item.likesCount}")
                 Spacer(Modifier.width(12.dp))
                 IconButton(onClick = { /* TODO: comment */ }) {
                     Icon(Icons.Default.Send, contentDescription = "댓글", tint = PrimaryPurple)
                 }
-                Text("${item.comments}")
+                Text("${item.commentsCount}")
             }
+        }
+    }
+}
+
+@Composable
+private fun EmptyFeedCard() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        color = Color.White
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("아직 게시물이 없어요.", fontWeight = FontWeight.SemiBold)
+            Text("첫 글을 작성해 마음을 나눠보세요.", color = Color.Gray)
         }
     }
 }
