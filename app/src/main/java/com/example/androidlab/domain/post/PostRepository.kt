@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 interface PostRepository {
     fun observePosts(): Flow<List<Post>>
     suspend fun create(post: Post)
+    suspend fun like(postId: String)
+    suspend fun unlike(postId: String)
 }

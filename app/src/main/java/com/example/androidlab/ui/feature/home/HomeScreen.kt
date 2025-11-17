@@ -145,7 +145,12 @@ fun HomeScreen(
                 }
             } else {
                 items(state.posts, key = { it.id }) { item ->
-                    FeedCard(item)
+                    val liked = state.likedPostIds.contains(item.id)
+                    FeedCard(
+                        item = item,
+                        liked = liked,
+                        onLikeToggle = { vm.onLikeToggle(item.id) }
+                    )
                 }
             }
         }
@@ -153,7 +158,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun FeedCard(item: Post) {
+private fun FeedCard(item: Post, liked: Boolean, onLikeToggle: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -177,8 +182,12 @@ private fun FeedCard(item: Post) {
             Text(item.content, style = MaterialTheme.typography.bodyMedium)
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { /* TODO: like */ }) {
-                    Icon(Icons.Default.Favorite, contentDescription = "공감", tint = PrimaryPurple)
+                IconButton(onClick = onLikeToggle) {
+                    Icon(
+                        Icons.Default.Favorite,
+                        contentDescription = "공감",
+                        tint = if (liked) PrimaryPurple else Color.Gray
+                    )
                 }
                 Text("${item.likesCount}")
                 Spacer(Modifier.width(12.dp))

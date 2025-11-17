@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidlab.domain.post.Post
 import com.example.androidlab.domain.post.usecase.ObservePosts
+import com.example.androidlab.domain.post.usecase.LikePost
+import com.example.androidlab.domain.post.usecase.UnlikePost
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,12 +17,15 @@ import kotlinx.coroutines.launch
 data class HomeUiState(
     val posts: List<Post> = emptyList(),
     val loading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val likedPostIds: Set<String> = emptySet()
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    observePosts: ObservePosts
+    observePosts: ObservePosts,
+    private val likePost: LikePost,
+    private val unlikePost: UnlikePost
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUiState(loading = true))
@@ -35,9 +40,31 @@ class HomeViewModel @Inject constructor(
                     _state.value = HomeUiState(
                         posts = posts,
                         loading = false,
-                        error = null
+                        error = null,
+                        likedPostIds = _state.value.likedPostIds
                     )
                 }
+        }
+    }
+
+    fun onLikeToggle(postId: String) {
+        val currentLiked = _state.value.likedPostIds
+        viewModelScope.launch {
+            try {
+                if (currentLiked.contains(postId)) {
+                    unlikePost(postId)
+                    _state.value = _state.value.copy(
+                        likedPostIds = currentLiked - postId
+                    )
+                } else {
+                    likePost(postId)
+                    _state.value = _state.value.copy(
+                        likedPostIds = currentLiked + postId
+                    )
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = e.message)
+            }
         }
     }
 }

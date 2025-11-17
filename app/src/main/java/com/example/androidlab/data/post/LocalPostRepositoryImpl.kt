@@ -16,4 +16,12 @@ class LocalPostRepositoryImpl @Inject constructor(
     override suspend fun create(post: Post) {
         dao.insert(post.toEntity())
     }
+
+    override suspend fun like(postId: String) {
+        dao.incrementLikes(postId)
+    }
+
+    override suspend fun unlike(postId: String) {
+        dao.decrementLikes(postId)
+    }
 }
